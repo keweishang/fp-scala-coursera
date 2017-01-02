@@ -1,4 +1,4 @@
-# fp-scala-coursera
+# Functional Programming Principles in Scala
 
 I'm following _Functional Programming Principles in Scala_ by École Polytechnique Fédérale de Lausanne (EPFL) on Coursera.
 
