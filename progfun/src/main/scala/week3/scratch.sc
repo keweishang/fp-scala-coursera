@@ -10,11 +10,10 @@ r.printx
 
 // x is not available as field of class
 //r.x
+val x = null
+val y: String = x
 
 // the type of error is it's a method that
 def error(msg: String) = throw new Error(msg)
-
-val x = null
-val y: String = x
 // error: type mismatch
 // val z: Int = null
