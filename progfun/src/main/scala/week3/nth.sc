@@ -8,5 +8,8 @@ def nth[T](n: Int, list: List[T]): T = {
   else nth(n - 1, list.tail)
 }
 
+// expect 3
 nth(2, list)
+
+// expect exception
 nth(3, list)
