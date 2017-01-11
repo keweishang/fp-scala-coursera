@@ -54,6 +54,8 @@ abstract class TweetSet {
     */
   def union(that: TweetSet): TweetSet
 
+  def isEmpty: Boolean
+
   /**
     * Returns the tweet from this set which has the greatest retweet count.
     *
@@ -63,7 +65,13 @@ abstract class TweetSet {
     * Question: Should we implement this method here, or should it remain abstract
     * and be implemented in the subclasses?
     */
-  def mostRetweeted: Tweet = ???
+  def mostRetweeted: Tweet
+
+  /**
+    * Helper method for `mostRetweeted` that propagates the most retweeted tweet so far
+    *
+    */
+  def mostRetweetedAcc(tweet: Tweet): Tweet
 
   /**
     * Returns a list containing all tweets of this set, sorted by retweet count
@@ -71,10 +79,15 @@ abstract class TweetSet {
     * have the highest retweet count.
     *
     * Hint: the method `remove` on TweetSet will be very useful.
-    * Question: Should we implment this method here, or should it remain abstract
+    * Question: Should we implement this method here, or should it remain abstract
     * and be implemented in the subclasses?
     */
-  def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList = {
+    if (!isEmpty) {
+      val tweet = mostRetweeted;
+      new Cons(tweet, remove(tweet).descendingByRetweet)
+    } else Nil
+  }
 
   /**
     * The following methods are already implemented
@@ -110,6 +123,12 @@ class Empty extends TweetSet {
 
   def union(acc: TweetSet): TweetSet = acc
 
+  def isEmpty = true
+
+  def mostRetweeted: Tweet = throw new NoSuchElementException()
+
+  def mostRetweetedAcc(tweet: Tweet) = tweet
+
   /**
     * The following methods are already implemented
     */
@@ -133,6 +152,18 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
   def union(acc: TweetSet): TweetSet = {
     right.union(left.union(acc)).incl(elem)
+  }
+
+  def isEmpty = false
+
+  def mostRetweeted: Tweet = mostRetweetedAcc(elem)
+
+  def mostRetweetedAcc(tweet: Tweet): Tweet = {
+    val max = if (tweet.retweets > elem.retweets) tweet else elem
+    if (!left.isEmpty && !right.isEmpty) right.mostRetweetedAcc(left.mostRetweetedAcc(max))
+    else if (!left.isEmpty) left.mostRetweetedAcc(max)
+    else if (!right.isEmpty) right.mostRetweetedAcc(max)
+    else max
   }
 
   /**
@@ -190,18 +221,25 @@ class Cons(val head: Tweet, val tail: TweetList) extends TweetList {
 
 
 object GoogleVsApple {
-  lazy val googleTweets: TweetSet = ???
-  lazy val appleTweets: TweetSet = ???
+  lazy val googleTweets: TweetSet = TweetReader.allTweets.filter(filter(google))
+  lazy val appleTweets: TweetSet = TweetReader.allTweets.filter(filter(apple))
   /**
     * A list of all tweets mentioning a keyword from either apple or google,
     * sorted by the number of retweets.
     */
-  lazy val trending: TweetList = ???
+  lazy val trending: TweetList = (googleTweets union appleTweets).descendingByRetweet
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
+
+  def filter(keywords: List[String])(tweet: Tweet): Boolean = keywords.exists(predicate(tweet))
+
+  def predicate(tweet: Tweet)(keyword: String): Boolean = {
+    tweet.text.contains(keyword)
+  }
 }
 
 object Main extends App {
   // Print the trending tweets
   GoogleVsApple.trending foreach println
 }
+
