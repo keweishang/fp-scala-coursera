@@ -52,14 +52,7 @@ abstract class TweetSet {
     * Question: Should we implement this method here, or should it remain abstract
     * and be implemented in the subclasses?
     */
-  def union(that: TweetSet): TweetSet = {
-    def exists(tw: Tweet, set: TweetSet): Boolean = !set.contains(tw)
-
-    val left = filterAccUnion(exists, new Empty)
-    that.filterAccUnion(exists, left)
-  }
-
-  def filterAccUnion(p: (Tweet, TweetSet) => Boolean, acc: TweetSet): TweetSet
+  def union(that: TweetSet): TweetSet
 
   /**
     * Returns the tweet from this set which has the greatest retweet count.
@@ -115,7 +108,7 @@ class Empty extends TweetSet {
 
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
 
-  def filterAccUnion(p: (Tweet, TweetSet) => Boolean, acc: TweetSet): TweetSet = acc
+  def union(acc: TweetSet): TweetSet = acc
 
   /**
     * The following methods are already implemented
@@ -138,10 +131,8 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     else children
   }
 
-  def filterAccUnion(p: (Tweet, TweetSet) => Boolean, acc: TweetSet): TweetSet = {
-    val childrien = right.filterAccUnion(p, left.filterAccUnion(p, acc))
-    if (p(elem, acc)) childrien.incl(elem)
-    else childrien
+  def union(acc: TweetSet): TweetSet = {
+    right.union(left.union(acc)).incl(elem)
   }
 
   /**
