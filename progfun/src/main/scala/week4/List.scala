@@ -63,7 +63,10 @@ object List {
 object test {
   // test List is covariant
   val x: List[String] = Nil
+  val s = "abc"
 
   // this function returns a result of type List[IntSet]
   def f(xs: List[NonEmpty], x: Empty) = xs prepend x
+  val b = s.isInstanceOf
+  println(b)
 }
