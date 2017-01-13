@@ -1,10 +1,8 @@
-var t1 = new NonEmpty(3, Empty, Empty)
-var t2 = t1 incl 4
-var t3 = new NonEmpty(1, Empty, Empty) incl 2
-t2.union(t3)
+package week3
 
-
-
+/**
+  * Created by kshang on 13/01/2017.
+  */
 abstract class IntSet {
 
   def incl(x: Int): IntSet
@@ -12,17 +10,6 @@ abstract class IntSet {
   def contains(x: Int): Boolean
 
   def union(that: IntSet): IntSet
-}
-
-object Empty extends IntSet {
-
-  def incl(x: Int): IntSet = new NonEmpty(x, Empty, Empty)
-
-  def contains(x: Int): Boolean = false
-
-  override def toString: String = "."
-
-  def union(other: IntSet): IntSet = other
 }
 
 class NonEmpty(elem: Int, left: IntSet, right: IntSet) extends IntSet {
@@ -44,4 +31,22 @@ class NonEmpty(elem: Int, left: IntSet, right: IntSet) extends IntSet {
   def union(other: IntSet): IntSet =
     ((left union right) union other) incl elem
 
+}
+
+class Empty extends IntSet {
+
+  def incl(x: Int): IntSet = new NonEmpty(x, new Empty, new Empty)
+
+  def contains(x: Int): Boolean = false
+
+  override def toString: String = "."
+
+  def union(other: IntSet): IntSet = other
+}
+
+object test {
+  var t1 = new NonEmpty(3, new Empty, new Empty)
+  var t2 = t1 incl 4
+  var t3 = new NonEmpty(1, new Empty, new Empty) incl 2
+  t2.union(t3)
 }

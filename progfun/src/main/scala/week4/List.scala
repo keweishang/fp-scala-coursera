@@ -2,6 +2,8 @@ package week4
 
 import java.util.NoSuchElementException
 
+import week3.{Empty, NonEmpty}
+
 /**
   * Created by kshang on 09/01/2017.
   */
@@ -12,6 +14,12 @@ trait List[+T] {
   def head: T
 
   def tail: List[T]
+
+
+  // fails varience check
+  // def prepend(elem: T): List[T] = new Cons(elem, this)
+  // use lower bound to solve the problem of covariance
+  def prepend[U >: T](elem: U): List[U] = new Cons(elem, this)
 
 }
 
@@ -55,4 +63,7 @@ object List {
 object test {
   // test List is covariant
   val x: List[String] = Nil
+
+  // this function returns a result of type List[IntSet]
+  def f(xs: List[NonEmpty], x: Empty) = xs prepend x
 }
