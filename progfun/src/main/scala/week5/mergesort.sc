@@ -7,6 +7,7 @@ def merge(xs: List[Int], ys: List[Int]): List[Int] = (xs, ys) match {
     else y :: merge(xs, ys1)
 }
 
+// complexity: O(nlgn)
 def msort(xs: List[Int]): List[Int] = {
   val n = xs.length / 2
   if (n == 0) xs
