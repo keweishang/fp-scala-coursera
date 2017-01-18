@@ -15,3 +15,12 @@ def init[T](xs: List[T]): List[T] = xs match {
 }
 
 init(List(1, 5, 8))
+
+// concatenate two lists
+// complexity: O(n) where n is the size of list xs
+def concat[T](xs: List[T], ys: List[T]): List[T] = xs match {
+  case List() => ys
+  case z :: zs => z :: concat(zs, ys)
+}
+
+concat(List(10, 20, 30), List(40, 50))
