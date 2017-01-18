@@ -17,3 +17,5 @@ def msort(xs: List[Int]): List[Int] = {
 }
 
 msort(List(3, 6, 1, 4, 2))
+msort(List(6))
+msort(List())
