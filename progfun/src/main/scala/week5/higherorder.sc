@@ -40,3 +40,13 @@ def encode[T](xs: List[T]): List[(T, Int)] = {
   pack(xs) map (ys => (ys.head, ys.size))
 }
 encode(List('a', 'a', 'b', 'b', 'b', 'c', 'a'))
+
+// use foldRight to implement map
+def mapFun[T, U](xs: List[T], f: T => U): List[U] =
+  (xs foldRight List[U]()) ((x, rest) => f(x) :: rest)
+mapFun(List(1,2,3), x => "a" + x)
+
+// use foldRight to implement length
+def lengthFun[T](xs: List[T]): Int =
+  (xs foldRight 0) ((_, len) => len + 1)
+lengthFun(List(1,2,3))
